@@ -10,16 +10,37 @@ import UIKit
 import SpriteKit
 
 
+
 class MainGameScene: SKScene {
 
     
+    var player:PlayerSprite?
+    var playerFront:SKSpriteNode = SKSpriteNode()
+    var playerBottom:SKSpriteNode = SKSpriteNode()
+    var count = 0
+    
+    var playerState:PlayerMoveState = .Fall
+    
     
     override func didMoveToView(view: SKView) {
+        
         let worldBorder = SKPhysicsBody(edgeLoopFromRect: self.frame)
-        self.physicsBody = worldBorder
-        self.physicsBody?.friction = 1
+        physicsBody = worldBorder
+        physicsBody?.friction = 1
+        physicsBody?.categoryBitMask = borderCategory
         
-        self.physicsWorld.gravity = CGVectorMake(0, -1)
+        physicsWorld.gravity = CGVectorMake(0, -1)
         
+        if let player:PlayerSprite = self.childNodeWithName("player") as? PlayerSprite {
+            self.player = player
+            player.ready()
+        }
     }
+    
+    
+    override func update(currentTime: NSTimeInterval) {
+        player?.update()
+    }
+    
+    
 }
