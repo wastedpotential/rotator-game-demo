@@ -13,6 +13,7 @@ class RootViewController: UIViewController {
 
     var myScene:SKScene?
     var myPlayer:PlayerSprite?
+    var currentPlayerOrientation = 2
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,5 +69,30 @@ class RootViewController: UIViewController {
         }
     }
     
+    @IBAction func tapGestureReceived(sender: UITapGestureRecognizer) {
+        
+        currentPlayerOrientation = (currentPlayerOrientation + 1) % 4;       
+        
+        switch currentPlayerOrientation {
+        case 0:
+            print("portrait")
+            myScene?.physicsWorld.gravity = CGVectorMake(gravity, 0)
+            myPlayer?.rotateTo(.Portrait)
+        case 1:
+            print("upside down")
+            myScene?.physicsWorld.gravity = CGVectorMake(-1*gravity, 0)
+            myPlayer?.rotateTo(.UpsideDown)
+        case 2:
+            print("landscape right")
+            myScene?.physicsWorld.gravity = CGVectorMake(0, -1*gravity)
+            myPlayer?.rotateTo(.LandscapeRight)
+        case 3:
+            print("landscape left")
+            myScene?.physicsWorld.gravity = CGVectorMake(0, gravity)
+            myPlayer?.rotateTo(.LandscapeLeft)
+        default:
+            break
+        }
+    }
 }
 
