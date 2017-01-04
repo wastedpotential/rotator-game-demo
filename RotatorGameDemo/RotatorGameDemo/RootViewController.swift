@@ -13,12 +13,12 @@ class RootViewController: UIViewController {
 
     var myScene:SKScene?
     var myPlayer:PlayerSprite?
-    var currentPlayerOrientation = 2
+    var currentWorldOrientation: DeviceOrientation = .LandscapeRight
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(interfaceDidRotate), name: UIDeviceOrientationDidChangeNotification, object: nil)
+        //NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(interfaceDidRotate), name: UIDeviceOrientationDidChangeNotification, object: nil)
         
         //set up the scene:
         let skView = SKView(frame: self.view.frame)
@@ -32,6 +32,7 @@ class RootViewController: UIViewController {
                 myPlayer = player
             }
         }
+        rotateWorldTo(currentWorldOrientation)
     }
 
     override func didReceiveMemoryWarning() {
@@ -39,6 +40,7 @@ class RootViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    //deprecated:
     func interfaceDidRotate() {
         switch UIDevice.currentDevice().orientation.rawValue {
         case 1:
@@ -70,29 +72,37 @@ class RootViewController: UIViewController {
     }
     
     @IBAction func tapGestureReceived(sender: UITapGestureRecognizer) {
-        
-        currentPlayerOrientation = (currentPlayerOrientation + 1) % 4;       
-        
-        switch currentPlayerOrientation {
-        case 0:
-            print("portrait")
-            myScene?.physicsWorld.gravity = CGVectorMake(gravity, 0)
-            myPlayer?.rotateTo(.Portrait)
-        case 1:
-            print("upside down")
-            myScene?.physicsWorld.gravity = CGVectorMake(-1*gravity, 0)
-            myPlayer?.rotateTo(.UpsideDown)
-        case 2:
-            print("landscape right")
-            myScene?.physicsWorld.gravity = CGVectorMake(0, -1*gravity)
-            myPlayer?.rotateTo(.LandscapeRight)
-        case 3:
-            print("landscape left")
-            myScene?.physicsWorld.gravity = CGVectorMake(0, gravity)
-            myPlayer?.rotateTo(.LandscapeLeft)
+        switch currentWorldOrientation {
+        case .Portrait:
+            rotateWorldTo(.LandscapeLeft)
+        case .LandscapeLeft:
+            rotateWorldTo(.UpsideDown)
+        case .UpsideDown:
+            rotateWorldTo(.LandscapeRight)
+        case .LandscapeRight:
+            rotateWorldTo(.Portrait)
         default:
             break
         }
+    }
+    
+    func rotateWorldTo(orientation: DeviceOrientation) {
+        currentWorldOrientation = orientation
+        
+        switch orientation {
+        case .Portrait:
+            myScene?.physicsWorld.gravity = CGVectorMake(gravity, 0)
+        case .LandscapeLeft:
+            myScene?.physicsWorld.gravity = CGVectorMake(0, gravity)
+        case .LandscapeRight:
+            myScene?.physicsWorld.gravity = CGVectorMake(0, -1*gravity)
+        case .UpsideDown:
+            myScene?.physicsWorld.gravity = CGVectorMake(-1*gravity, 0)
+        default:
+            break
+        }
+        
+        myPlayer?.rotateTo(currentWorldOrientation)
     }
 }
 

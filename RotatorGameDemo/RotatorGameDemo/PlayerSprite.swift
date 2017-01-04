@@ -117,18 +117,18 @@ class PlayerSprite: SKSpriteNode, SKPhysicsContactDelegate {
         var shouldRotate = true
         switch orientation {
         case .Portrait:
-            angle = 0.5*CGFloat(M_PI) - self.zRotation //rotate to 90 degrees
+            angle = 0.5*CGFloat(M_PI) //rotate to 90 degrees
         case .UpsideDown:
-            angle = -0.5*CGFloat(M_PI) - self.zRotation //rotate to -90 degrees
+            angle = -0.5*CGFloat(M_PI) //rotate to -90 degrees
         case .LandscapeLeft:
-            angle = CGFloat(M_PI) - self.zRotation //rotate to 180 degrees
+            angle = CGFloat(M_PI) //rotate to 180 degrees
         case .LandscapeRight:
-            angle = 0.0 - self.zRotation //rotate to 0
+            angle = 0.0 //rotate to 0
         default:
             shouldRotate = false //do nothing
         }
         if shouldRotate {
-            let rotateAction = SKAction.rotateByAngle(angle, duration: 0.2)
+            let rotateAction = SKAction.rotateToAngle(angle, duration: 0.2, shortestUnitArc: true)
             self.runAction(rotateAction)
         }
     }
